@@ -1,3 +1,5 @@
+let homepage_url = ""; //empty on purpose. will be filled by function formScriptKdfReady
+
 let mergeIndividualGlobalVariables = {
     mergeBehavior: "updateandmerge",
     individualFieldsInfo: [
@@ -167,8 +169,6 @@ let mergeIndividualGlobalVariables = {
     tenantCountryCode: null, //current mapped values "CA" "GB" "US", further addition please follow this convention: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
     queriedIndividualData: [] //all queried individual data (both primary and dupes) in its original data, serves as data structure of the UI
 };
-
-var homepage_url = "https://proservices.desktop.capreview.empro.verintcloudservices.com/party/C1/";
 
 function resetForm(resetSearchParam = false)
 {
@@ -706,8 +706,10 @@ function button_merge_another_OnClick()
     resetForm(true);
 }
 
-function mergeIndividualdebugTrigger(eventParamInject, kdfParamInject) {
-    console.log("external js triggered");
+function formScriptKdfReady(event, kdf, homepageUrl) {
+    console.log("External JavaScript Trigger: formScriptKdfReady");
+
+    homepage_url = homepageUrl;
     initializePageComplete();
     setHTMLMergeOptions();
     setTenantRegion(); //just hard code this during deployment. one time setup. proservices tenant not using CA but GB
@@ -731,63 +733,64 @@ function mergeIndividualdebugTrigger(eventParamInject, kdfParamInject) {
     $("#mergeCustomer").off('click').on('click', function(){
         mergeCustomer();
     });
-    $('#dform_merge_individual').off('_KDF_custom').on('_KDF_custom', function(event, kdf, response, action) {
-        console.log("FORMADAPTER TRIGGER: " + response.action);
-        if (response.action == 'merge-individual-search') { 
-            $.each(response.data.person_search_results, function(index, value){
-                if(mergeIndividualGlobalVariables.queriedIndividualData.find(x => x['individual-identifier'] === value.value) === undefined)
-                {
-                    mergeIndividualGlobalVariables.queriedIndividualData.push({
-                        'individual-identifier': value.value,
-                        existInTable: false
-                    });
-                    KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
-                        'individual-id': value.value
-                    });
-                }
-            });
-        }
+}
 
-        if (response.action == 'merge-individual-retrieve') {
-            addCustomerToTable(response.data);
-        }
-        
-        if (response.action == 'merge-individual-update') {
-            console.log("Form Adapter Response: merge-individual-update");
-            let isIndividualSuccessfullyUpdated = false;
-            if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
+function formScriptKdfCustom(event, kdf, response, action) {
+    console.log("FORMADAPTER TRIGGER: " + response.action);
+    if (response.action == 'merge-individual-search') { 
+        $.each(response.data.person_search_results, function(index, value){
+            if(mergeIndividualGlobalVariables.queriedIndividualData.find(x => x['individual-identifier'] === value.value) === undefined)
             {
-                isIndividualSuccessfullyUpdated = true;
-            }
-
-            if(isIndividualSuccessfullyUpdated == true)
-            {
-                $('.summary-primary-individual > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
-
-                let payloadObj = {
-                    primaryIndividualId: $("#tableCompareIndividuals > tbody > tr:nth-child(1) > td:nth-child(2) > div > input")[0].value
-                };
-
-                let counter = 1;
-                mergeIndividualGlobalVariables.queriedIndividualData.filter(x => x.existInTable === true && x['individual-identifier'] !== payloadObj.primaryIndividualId).forEach(e => {
-                    payloadObj["duplicateIndividualId"+counter.toString()] = e['individual-identifier'];
-                    ++counter;
+                mergeIndividualGlobalVariables.queriedIndividualData.push({
+                    'individual-identifier': value.value,
+                    existInTable: false
                 });
-
-                console.log(payloadObj);
-                
-                if (mergeIndividualGlobalVariables.mergeBehavior === "updateandmerge")
-                    KDF.customdata('merge-individual', 'from form kdf custom script', true, true, payloadObj);
+                KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
+                    'individual-id': value.value
+                });
             }
+        });
+    }
+
+    if (response.action == 'merge-individual-retrieve') {
+        addCustomerToTable(response.data);
+    }
+    
+    if (response.action == 'merge-individual-update') {
+        console.log("Form Adapter Response: merge-individual-update");
+        let isIndividualSuccessfullyUpdated = false;
+        if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
+        {
+            isIndividualSuccessfullyUpdated = true;
         }
 
-        if (response.action == 'merge-individual') {
-            console.log("mergeindividualreturn");
+        if(isIndividualSuccessfullyUpdated == true)
+        {
+            $('.summary-primary-individual > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
+
+            let payloadObj = {
+                primaryIndividualId: $("#tableCompareIndividuals > tbody > tr:nth-child(1) > td:nth-child(2) > div > input")[0].value
+            };
+
+            let counter = 1;
+            mergeIndividualGlobalVariables.queriedIndividualData.filter(x => x.existInTable === true && x['individual-identifier'] !== payloadObj.primaryIndividualId).forEach(e => {
+                payloadObj["duplicateIndividualId"+counter.toString()] = e['individual-identifier'];
+                ++counter;
+            });
+
+            console.log(payloadObj);
             
-            if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
-            {
-                $('.summary-merged-individuals > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
-            }
+            if (mergeIndividualGlobalVariables.mergeBehavior === "updateandmerge")
+                KDF.customdata('merge-individual', 'from form kdf custom script', true, true, payloadObj);
         }
-    });
-};
+    }
+
+    if (response.action == 'merge-individual') {
+        console.log("mergeindividualreturn");
+        
+        if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
+        {
+            $('.summary-merged-individuals > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
+        }
+    }
+}
