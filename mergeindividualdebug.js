@@ -1,8 +1,69 @@
-let global_currentQueriedIndividual = [];
 let mergeIndividualGlobalVariables = {
+    mergeBehavior: "updateandmerge",
     individualFieldsInfo: [
         {
-            countryCode: 'CA',
+            countryCode: 'ALLFIELDS', //show allfields for demo purpose (also this is all retrieved by formadapter)
+            countryCodeLabel: 'Show ALL Fields',
+            fieldsOrder: [
+                'Name.NameID',
+                'Name.Title',
+                'Name.Forename1',
+                'Name.Forename2',
+                'Name.Forename3',
+                'Name.Surname',
+                'ContactPostals.AddressID',
+                'ContactPostals.AddressNumber',
+                'ContactPostals.AddressLine1',
+                'ContactPostals.AddressLine2',
+                'ContactPostals.AddressLine3',
+                'ContactPostals.AddressLine4',
+                'ContactPostals.AddressLine5',
+                'ContactPostals.AddressLine6',
+                'ContactPostals.City',
+                'ContactPostals.StateCode',
+                'ContactPostals.Postcode',
+                'ContactPostals.Zipcode',
+                'ContactPostals.POBox',
+                'ContactPhones.PhoneID',
+                'ContactPhones.Number',
+                'ContactPhones.DeviceType',
+                'ContactPhones.Usage',
+                'ContactEmails.EmailID',
+                'ContactEmails.EmailAddress',
+                'ContactEmails.Usage'
+            ],
+            fieldsLabel: {
+                'Name.NameID': "Name Identifier",
+                'Name.Title': "Title",
+                'Name.Forename1': "First Name",
+                'Name.Forename2': 'Name.Forename2',
+                'Name.Forename3': 'Name.Forename3',
+                'Name.Surname': "Last Name",
+                'ContactPostals.AddressID': "ContactPostals.AddressID",
+                'ContactPostals.AddressNumber': "Address Number",
+                'ContactPostals.AddressLine1': "Address Line 1",
+                'ContactPostals.AddressLine2': "Address Line 2",
+                'ContactPostals.AddressLine3': "AddressLine3",
+                'ContactPostals.AddressLine4': "AddressLine4",
+                'ContactPostals.AddressLine5': "AddressLine5",
+                'ContactPostals.AddressLine6': 'AddressLine6',
+                'ContactPostals.City': 'City',
+                'ContactPostals.StateCode': 'State Code',
+                'ContactPostals.Postcode': 'Postcode',
+                'ContactPostals.Zipcode': 'Zipcode',
+                'ContactPostals.POBox': 'PO Box',
+                'ContactPhones.PhoneID': "Phone Identifier",
+                'ContactPhones.Number': 'Phone Number',
+                'ContactPhones.DeviceType': 'Phone Device Type',
+                'ContactPhones.Usage': 'Phone Usage',
+                'ContactEmails.EmailID': "Email Identifier",
+                'ContactEmails.EmailAddress': "Email Address",
+                'ContactEmails.Usage': "Email Usage"
+            }
+        },
+        {
+            countryCode: 'GB', //taken from lbedev.ukpreview.empro.verintcloudservices.com apparently proservices tenant use this config
+            countryCodeLabel: 'United Kingdom',
             fieldsOrder: [
                 'Name.Title',
                 'Name.Forename1',
@@ -19,128 +80,133 @@ let mergeIndividualGlobalVariables = {
                 'ContactEmails.EmailAddress'
             ],
             fieldsLabel: {
-                'Name.NameID': "Name Identifier",
                 'Name.Title': "Title",
                 'Name.Forename1': "First Name",
-                'Name.Forename2': 'Name.Forename2',
-                'Name.Forename3': 'Name.Forename3',
                 'Name.Surname': "Last Name",
-                'ContactPostals.AddressID': "ContactPostals.AddressID",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
                 'ContactPostals.AddressLine2': "Address Line 2",
                 'ContactPostals.AddressLine3': "Locality",
                 'ContactPostals.AddressLine4': "Town",
                 'ContactPostals.AddressLine5': "County",
-                'ContactPostals.AddressLine6': 'ContactPostals.AddressLine6',
                 'ContactPostals.Postcode': "Postcode",
                 'ContactPostals.POBox': "PO Box",
-                'ContactPhones.PhoneID': "Phone Identifier",
                 'ContactPhones.Number': 'Phone Number',
-                'ContactPhones.DeviceType': 'Phone Device Type',
-                'ContactPhones.Usage': 'Phone Usage',
-                'ContactEmails.EmailID': "Email Identifier",
-                'ContactEmails.EmailAddress': "Email Address",
-                'ContactEmails.Usage': "Email Usage"
+                'ContactEmails.EmailAddress': "Email Address"
             }
         },
         {
-            countryCode: 'US',
+            countryCode: 'US', //taken from usain tenant
+            countryCodeLabel: 'United States',
             fieldsOrder: [
+                'Name.Title',
                 'Name.Forename1',
                 'Name.Surname',
                 'ContactPostals.AddressNumber',
-                'ContactPhones.Number',
-                'ContactEmails.EmailAddress',
                 'ContactPostals.AddressLine1',
                 'ContactPostals.AddressLine2',
                 'ContactPostals.AddressLine3',
-                'ContactPostals.AddressLine4',
-                'ContactPostals.AddressLine5',
-                'ContactPostals.AddressLine6',
-                'ContactPostals.POBox'
+                'ContactPostals.City',
+                'ContactPostals.StateCode',
+                'ContactPostals.Zipcode',
+                'ContactPostals.POBox',
+                'ContactPhones.Number',
+                'ContactEmails.EmailAddress'
             ],
             fieldsLabel: {
-                'Name.NameID': "Name Identifier",
                 'Name.Title': "Title",
                 'Name.Forename1': "First Name",
-                'Name.Forename2': 'Name.Forename2',
-                'Name.Forename3': 'Name.Forename3',
                 'Name.Surname': "Last Name",
-                'ContactPostals.AddressID': "ContactPostals.AddressID",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
                 'ContactPostals.AddressLine2': "Address Line 2",
-                'ContactPostals.AddressLine3': "Locality",
-                'ContactPostals.AddressLine4': "Town",
-                'ContactPostals.AddressLine5': "County",
-                'ContactPostals.AddressLine6': 'ContactPostals.AddressLine6',
-                'ContactPostals.Postcode': "Postcode",
+                'ContactPostals.AddressLine3': "Address Line 3",
+                'ContactPostals.City': 'Town/City',
+                'ContactPostals.StateCode': 'State',
+                'ContactPostals.Zipcode': 'Zipcode',
                 'ContactPostals.POBox': "PO Box",
-                'ContactPhones.PhoneID': "Phone Identifier",
                 'ContactPhones.Number': 'Phone Number',
-                'ContactPhones.DeviceType': 'Phone Device Type',
-                'ContactPhones.Usage': 'Phone Usage',
-                'ContactEmails.EmailID': "Email Identifier",
-                'ContactEmails.EmailAddress': "Email Address",
-                'ContactEmails.Usage': "Email Usage"
+                'ContactEmails.EmailAddress': "Email Address"
+            }
+        },
+        {
+            countryCode: 'CA',
+            countryCodeLabel: 'Canada',
+            fieldsOrder: [
+                'Name.Title',
+                'Name.Forename1',
+                'Name.Surname',
+                'ContactPostals.AddressNumber',
+                'ContactPostals.AddressLine1',
+                'ContactPostals.AddressLine2',
+                'ContactPostals.AddressLine3',
+                'ContactPostals.City',
+                'ContactPostals.StateCode',
+                'ContactPostals.Zipcode',
+                'ContactPostals.POBox',
+                'ContactPhones.Number',
+                'ContactEmails.EmailAddress'
+            ],
+            fieldsLabel: {
+                'Name.Title': "Title",
+                'Name.Forename1': "First Name",
+                'Name.Surname': "Last Name",
+                'ContactPostals.AddressNumber': "Address Number",
+                'ContactPostals.AddressLine1': "Address Line 1",
+                'ContactPostals.AddressLine2': "Address Line 2",
+                'ContactPostals.AddressLine3': "Address Line 3",
+                'ContactPostals.City': 'Town/City',
+                'ContactPostals.StateCode': 'Province',
+                'ContactPostals.Zipcode': 'Postal Code',
+                'ContactPostals.POBox': "PO Box",
+                'ContactPhones.Number': 'Phone Number',
+                'ContactEmails.EmailAddress': "Email Address"
             }
         }
     ],
     tenantCountryCode: null, //current mapped values "CA" "GB" "US", further addition please follow this convention: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-    queriedIndividualData: [], //all queried individual data (both primary and dupes) in its original data
-    selectedIndividualData: {} //selected primary individual
+    queriedIndividualData: [] //all queried individual data (both primary and dupes) in its original data, serves as data structure of the UI
 };
-
-function showWidgets() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.showWidget(arguments[i]);
-    }
-}
-
-function showSections() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.showSection(arguments[i]);
-    }
-}
-
-function showPages() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.showPage(arguments[i]);
-    }
-}
-
-function hideSections() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.hideSection(arguments[i]);
-    }
-}
-
-function hideWidgets() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.hideWidget(arguments[i]);
-    }
-}
-
-function hidePages() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.hidePage(arguments[i]);
-    }
-}
-
-function clearFields() {
-    for (i = 0; i < arguments.length; i++) {
-        KDF.setVal(arguments[i], '');
-    }
-}
 
 var homepage_url = "https://proservices.desktop.capreview.empro.verintcloudservices.com/party/C1/";
 
+function resetForm(resetSearchParam = false)
+{
+    KDF.hideMessages();
+
+    $('#tableCompareIndividuals').toggle('fast');
+    $('#searchFormSection').toggle('fast');
+    $("#backToSearchPage").toggle('fast');
+    $('#resetForm').toggle('fast');
+    $('#mergeCustomer').toggle('fast');
+    $('#btnSearchIndividual').toggle('fast');
+    $('#addOrCondition').toggle('fast');
+    $('#resetOrCondition').toggle('fast');
+    
+    $.each($('#tableCompareIndividuals > thead > tr > th .btn-column-remove'), function(index,item){
+        item.click();
+    });
+
+    $.each($('#tableCompareIndividuals > tbody > tr > td:nth-child(2) > div > input'), function(index, item){
+        item.value = null;
+    });
+
+    mergeIndividualGlobalVariables.queriedIndividualData = [];
+
+    if (resetSearchParam === true)
+    {
+        $.each($('#searchFormSection > .search-individual:not(:first)'), function(index, value){
+            value.remove();
+        });
+
+        $.each($('.search-individual > div > input'), function(index, item){
+            item.value = null;
+        });
+    }
+}
+
 function addCustomerToTable(data) {
     console.log(data);
-
-    // if($("#tableCompareIndividuals > tbody > tr:nth-child(1) > td:nth-child(n+3) > div > label:contains('"+data.person_search_results+"')").length > 0)
-    //     return;
 
     let internalObjDataIndex = mergeIndividualGlobalVariables.queriedIndividualData.findIndex(x => x['individual-identifier'] === data['individual-identifier']);
     
@@ -225,6 +291,19 @@ function populateTable() {
 
     //fill the table
     $.each($(".search-individual"),function(index,value){
+        let isSearchSectionEmpty = true;
+        for (e of $('#searchFormSection > div:eq('+index.toString()+') > div > input'))
+        {
+            if(e.value !== '')
+            {
+                isSearchSectionEmpty = false;
+                break;
+            }
+        }
+
+        if (isSearchSectionEmpty === true)
+            return;
+        
         let individualId = $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Identifier")').siblings('input').val();
         if(individualId == "")
         {
@@ -268,6 +347,12 @@ function mergeCustomer() {
         return;
     }
 
+    if ($("#tableCompareIndividuals > thead > tr > th").length < 4)
+    {
+        KDF.showWarning('Merge Individual must have at least two Individuals');
+        return;
+    }
+
     let storedIndividualDataIndex = mergeIndividualGlobalVariables.queriedIndividualData.findIndex(x => x['individual-identifier'] === primaryIndividualId);
 
     if(storedIndividualDataIndex < 0)
@@ -280,18 +365,6 @@ function mergeCustomer() {
 
     let dataObj = {};
     dataObj['individual-identifier'] = primaryIndividualId;
-
-    if (individualObj['Name.NameID'] !== '')
-        dataObj['Name.NameID'] = individualObj['Name.NameID'];
-
-    if (individualObj['ContactPostals.AddressID'] !== '')
-        dataObj['ContactPostals.AddressID'] = individualObj['ContactPostals.AddressID'];
-
-    if (individualObj['ContactPhones.PhoneID'] !== '')
-        dataObj['ContactPhones.PhoneID'] = individualObj['ContactPhones.PhoneID'];
-
-    if (individualObj['ContactEmails.EmailID'] !== '')
-        dataObj['ContactEmails.EmailID'] = individualObj['ContactEmails.EmailID'];
     
     mergeIndividualGlobalVariables.individualFieldsInfo.find(x => x.countryCode == mergeIndividualGlobalVariables.tenantCountryCode).fieldsOrder.forEach(function(value, index){
         let mergedFieldValue = $('#tableCompareIndividuals > tbody > tr:eq('+(index+1).toString()+') > td:eq(1) > div > input').val();
@@ -302,11 +375,110 @@ function mergeCustomer() {
         dataObj[value] = mergedFieldValue;
     });
 
-    console.log(dataObj);
+    for (let keyName of Object.keys(dataObj))
+    {
+        if (keyName.startsWith("Name."))
+        {
+            //if (individualObj['Name.NameID'] !== '')
+                dataObj['Name.NameID'] = individualObj['Name.NameID'];
+            break;
+        }
+    }
+
+    for (let keyName of Object.keys(dataObj))
+    {
+        if (keyName.startsWith("ContactPostals."))
+        {
+            //if (individualObj['ContactPostals.AddressID'] !== '')
+                dataObj['ContactPostals.AddressID'] = individualObj['ContactPostals.AddressID'];
+            break;
+        }
+    }
+
+    for (let keyName of Object.keys(dataObj))
+    {
+        if (keyName.startsWith("ContactPhones."))
+        {
+            //if (individualObj['ContactPhones.PhoneID'] !== '')
+                dataObj['ContactPhones.PhoneID'] = individualObj['ContactPhones.PhoneID'];
+            break;
+        }
+    }
     
-    KDF.customdata('merge-individual-update', 'from form kdf custom script', true, true, dataObj);
+    for (let keyName of Object.keys(dataObj))
+    {
+        if (keyName.startsWith("ContactEmails."))
+        {
+            //if (individualObj['ContactEmails.EmailID'] !== '')
+                dataObj['ContactEmails.EmailID'] = individualObj['ContactEmails.EmailID'];
+            break;
+        }
+    }
+
+    if (dataObj.hasOwnProperty('ContactPostals.AddressID') === true)
+    {
+        for (let keyName of Object.keys(dataObj))
+        {
+            if (keyName.startsWith("ContactPostals.AddressLine"))
+            {
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine1'))
+                    dataObj['ContactPostals.AddressLine1'] = individualObj['ContactPostals.AddressLine1'];
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine2'))
+                    dataObj['ContactPostals.AddressLine2'] = individualObj['ContactPostals.AddressLine2'];
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine3'))
+                    dataObj['ContactPostals.AddressLine3'] = individualObj['ContactPostals.AddressLine3'];
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine4'))
+                    dataObj['ContactPostals.AddressLine4'] = individualObj['ContactPostals.AddressLine4'];
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine5'))
+                    dataObj['ContactPostals.AddressLine5'] = individualObj['ContactPostals.AddressLine5'];
+                if (!dataObj.hasOwnProperty('ContactPostals.AddressLine6'))
+                    dataObj['ContactPostals.AddressLine6'] = individualObj['ContactPostals.AddressLine6'];
+                break;
+            }
+        }
+    }
+
+    if (dataObj.hasOwnProperty('Name.NameID') === true)
+    {
+        for (let keyName of Object.keys(dataObj))
+        {
+            if (keyName.startsWith("Name.Forename"))
+            {
+                if (!dataObj.hasOwnProperty('Name.Forename1'))
+                    dataObj['Name.Forename1'] = individualObj['Name.Forename1'];
+                if (!dataObj.hasOwnProperty('Name.Forename2'))
+                    dataObj['Name.Forename2'] = individualObj['Name.Forename2'];
+                if (!dataObj.hasOwnProperty('Name.Forename3'))
+                    dataObj['Name.Forename3'] = individualObj['Name.Forename3'];
+                break;
+            }
+        }
+    }
+
+    console.log(dataObj);
+
+    if (mergeIndividualGlobalVariables.mergeBehavior !== "none")
+        KDF.customdata('merge-individual-update', 'from form kdf custom script', true, true, dataObj);
     KDF.gotoNextPage();
-    KDF.showSuccess('Success, accounts have sucessfully been merged');
+    setMergeCompleteSummary();
+}
+
+function setMergeCompleteSummary()
+{
+    $('.page-completed-body-summary').first().html('<div class="page-completed-body-summary"> <h3>Summary</h3> <hr style="margin:0px;width:40%"> <div class="summary-primary-individual"> <label style="width:300px">Primary Individual</label> <label>:</label> <label></label> </div> <div class="summary-merged-individuals"> <label style="width:300px">Merged Individual(s)</label> <label>:</label> <label></label> </div> </div>');
+    
+    let primaryIndividualId = $("#tableCompareIndividuals > tbody > tr:nth-child(1) > td:nth-child(2) > div > input")[0].value;
+    $('.summary-primary-individual > label:nth-child(3)').html(primaryIndividualId);
+
+    let mergedIndividuals = "";
+
+    mergeIndividualGlobalVariables.queriedIndividualData.filter(x => x.existInTable === true && x['individual-identifier'] !== primaryIndividualId).forEach(e => {
+        if (mergedIndividuals !== "")
+            mergedIndividuals += ", ";
+        mergedIndividuals += e['individual-identifier'];
+    });
+
+    $('.summary-merged-individuals > label:nth-child(3)').html(mergedIndividuals);
 }
 
 function setMergedCustomerColumn(columnIndex)
@@ -371,7 +543,10 @@ function autoSelectField()
     if(maximumLength <= 2)
         return;
 
-    let individualWithKeycloak = mergeIndividualGlobalVariables.queriedIndividualData.find(x => x.existInTable === true && x['keycloak-id'] !== '')?.individualId;
+    let individualWithKeycloak = mergeIndividualGlobalVariables.queriedIndividualData.find(x => x.existInTable === true && x['keycloak-id'] !== '');
+
+    if (individualWithKeycloak !== undefined)
+        individualWithKeycloak = individualWithKeycloak["individual-identifier"];
 
     if(individualWithKeycloak === undefined)
     {
@@ -379,15 +554,15 @@ function autoSelectField()
         for(i=0;i<maxTableRow;i++)
         {
             let selectedText = "";
-            for(j=3;j<=maximumLength;j++)
+            for(j=2;j<=maximumLength;j++)
             {
-                if(selectedText != "")
-                    break;
+                selectedText = $('#tableCompareIndividuals > tbody > tr:eq('+i.toString()+') > td:eq('+j.toString()+') > div > label').html();
 
-                selectedText += $('#tableCompareIndividuals > tbody > tr:eq('+i.toString()+') > td:eq('+j.toString()+') > div > label').html();
+                if(selectedText !== "")
+                    break;
             }
 
-            $('#tableCompareIndividuals > tbody > tr:eq('+i.toString()+') > td:eq(2) > div > input').val(selectedText);
+            $('#tableCompareIndividuals > tbody > tr:eq('+i.toString()+') > td:eq(1) > div > input').val(selectedText);
         }
 
         return;
@@ -406,52 +581,53 @@ function goToMergedIndividual()
     window.open(homepage_url + customerID);
 }
 
-function setTenantRegion()
+function setTenantRegion(tenantCountryCode = null) //highly recommended to pass the value to this param to avoid auto-select
 {
-    let possibleValues = [
-        "capreview","ca",
-        "uspreview","us",
-        "ukpreview","uk"
-    ];
-
-    let hostSplit = window.location.host.split('.');
-    let hostRegion = undefined;
-
-    possibleValues.every(v => {
-        hostRegion = hostSplit.find(e => e == v);
-        if (hostRegion !== undefined)
-            return false;
-        return true;
-    });
-
-    if (hostRegion === undefined)
+    if (tenantCountryCode === null) //this is for auto detect, not really reliable unless you tune the possible values. for example usain tenant is stgeuw idk where to put that.
     {
-        alert("Warning: Unable to determine tenant region from url host name. Setting default region to capreview"); //proservices tenant default
-        hostRegion = "capreview";
-    }
+        let possibleValues = [
+            "capreview","ca",
+            "uspreview","us",
+            "ukpreview","uk"
+        ];
 
-    let tenantCountryCode = null;
+        let hostSplit = window.location.host.split('.');
+        let hostRegion = undefined;
 
-    switch(hostRegion)
-    {
-        case "capreview":
-            tenantCountryCode = "CA";
-            break;
-        case "ca":
-            tenantCountryCode = "CA";
-            break;
-        case "uspreview":
-            tenantCountryCode = "US";
-            break;
-        case "us":
-            tenantCountryCode = "US";
-            break;
-        case "ukpreview":
-            tenantCountryCode = "GB";
-            break;
-        case "uk":
-            tenantCountryCode = "GB";
-            break;
+        possibleValues.every(v => {
+            hostRegion = hostSplit.find(e => e == v);
+            if (hostRegion !== undefined)
+                return false;
+            return true;
+        });
+
+        if (hostRegion === undefined)
+        {
+            alert("Warning: Unable to determine tenant region from url host name. Setting default region to capreview"); //proservices tenant default
+            hostRegion = "capreview";
+        }
+
+        switch(hostRegion)
+        {
+            case "capreview":
+                tenantCountryCode = "CA";
+                break;
+            case "ca":
+                tenantCountryCode = "CA";
+                break;
+            case "uspreview":
+                tenantCountryCode = "US";
+                break;
+            case "us":
+                tenantCountryCode = "US";
+                break;
+            case "ukpreview":
+                tenantCountryCode = "GB";
+                break;
+            case "uk":
+                tenantCountryCode = "GB";
+                break;
+        }
     }
     
     mergeIndividualGlobalVariables.tenantCountryCode = tenantCountryCode;
@@ -463,43 +639,10 @@ function removeSearchIndividualSection(e)
     $(e).parent().remove();
 }
 
-function resetForm(resetSearchParam = false)
-{
-    KDF.hideMessages();
-
-    $('#tableCompareIndividuals').toggle('fast');
-    $('#searchFormSection').toggle('fast');
-    $("#backToSearchPage").toggle('fast');
-    $('#resetForm').toggle('fast');
-    $('#mergeCustomer').toggle('fast');
-    $('#btnSearchIndividual').toggle('fast');
-    $('#addOrCondition').toggle('fast');
-    $('#resetOrCondition').toggle('fast');
-    
-    $.each($('#tableCompareIndividuals > thead > tr > th .btn-column-remove'), function(index,item){
-        item.click();
-    });
-
-    $.each($('#tableCompareIndividuals > tbody > tr > td:nth-child(2) > div > input'), function(index, item){
-        item.value = null;
-    });
-
-    mergeIndividualGlobalVariables.queriedIndividualData = [];
-
-    if (resetSearchParam === true)
-    {
-        $.each($('#searchFormSection > .search-individual:not(:first)'), function(index, value){value.remove();});
-
-        $.each($('.search-individual > div > input'), function(index, item){
-            item.value = null;
-        });
-    }
-}
-
 function initializeTableColumn()
 {
     if($('#tableCompareIndividuals > tbody').children().length > 0)
-        return;
+        $('#tableCompareIndividuals > tbody').html('');
 
     let individualFieldsInfo = mergeIndividualGlobalVariables.individualFieldsInfo.find(x => x.countryCode == mergeIndividualGlobalVariables.tenantCountryCode);
 
@@ -526,26 +669,65 @@ function initializeTableColumn()
     });
 }
 
+function setCountryCode()
+{
+    if($('#tableCompareIndividuals').is(':visible') === true)
+        resetForm();
+    mergeIndividualGlobalVariables.tenantCountryCode = $('#countryCode').val();
+    console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
+    initializeTableColumn();
+}
+
+function setMergeOption()
+{
+    mergeIndividualGlobalVariables.mergeBehavior = $('#mergeOption').val();
+    console.log("Merge Individual Behavior: " + mergeIndividualGlobalVariables.mergeBehavior);
+}
+
+function setHTMLMergeOptions()
+{
+    mergeIndividualGlobalVariables.individualFieldsInfo.forEach(e => {
+        $('#countryCode').append('<option value="' + e.countryCode + '">'+ e.countryCodeLabel +'</option>');
+    });
+}
+
+function initializePageComplete()
+{
+    let rawHtml = '<div class="page-completed-body-summary"> <p1>summary</p1> </div> <div class="page-completed-navigation-footer"> <button id="button_go_to_merged_record" type="button" class="btn-gov" onclick="goToMergedIndividual()"><i class="fa-regular fa-user"></i> Go To Merged Record</button> <button id="button_merge_another" type="button" class="btn-gov-secondary" onclick="button_merge_another_OnClick()"><i class="fa-solid fa-repeat"></i> Merge Another</button> </div>';
+    $('#dform_widget_html_ahtm_merge_complete_summary').append(rawHtml);
+}
+
+function button_merge_another_OnClick()
+{
+    KDF.gotoPage('search_individual');
+    resetForm(true);
+}
+
 function mergeIndividualdebugTrigger(eventParamInject, kdfParamInject) {
     console.log("external js triggered");
-    setTenantRegion();
+    initializePageComplete();
+    setHTMLMergeOptions();
+    setTenantRegion('GB'); //just hard code this during deployment. one time setup. proservices tenant not using CA but GB
+    $('#countryCode').val(mergeIndividualGlobalVariables.tenantCountryCode);
+    console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
     initializeTableColumn();
 
-    console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
+    mergeIndividualGlobalVariables.mergeBehavior = "updateandmerge";
+    $('#mergeOption').val("updateandmerge");
 
     $('#tableCompareIndividuals').hide();
     $("#backToSearchPage").hide();
     $('#resetForm').hide();
     $('#mergeCustomer').hide();
-    $("#resetForm").off('click').on('click', resetForm);
-    $("#backToSearchPage").off('click').on('click', resetForm);
-    $("#mergeCustomer").off('click').on('click', mergeCustomer);
-    $("#dform_widget_button_but_merged_record").off('click').on('click', goToMergedIndividual);
-    $("#dform_widget_button_but_redo").off('click').on('click', function(){
-        KDF.gotoPage('search_individual');
+    $("#resetForm").off('click').on('click', function (){
         resetForm(true);
     });
-
+    $("#backToSearchPage").off('click').on('click', function(){
+        resetForm();
+    });
+    $("#mergeCustomer").off('click').on('click', function(){
+        mergeCustomer();
+    });
     $('#dform_merge_individual').off('_KDF_custom').on('_KDF_custom', function(event, kdf, response, action) {
         console.log("FORMADAPTER TRIGGER: " + response.action);
         if (response.action == 'merge-individual-search') { 
@@ -568,239 +750,41 @@ function mergeIndividualdebugTrigger(eventParamInject, kdfParamInject) {
         }
         
         if (response.action == 'merge-individual-update') {
-            console.log("MergeIndividual update");
+            console.log("Form Adapter Response: merge-individual-update");
             let isIndividualSuccessfullyUpdated = false;
-            if(response.data?.txt_success !== undefined && response.data?.txt_success !== null && response.data?.txt_success === 'Completed')
+            if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
             {
                 isIndividualSuccessfullyUpdated = true;
             }
 
             if(isIndividualSuccessfullyUpdated == true)
             {
+                $('.summary-primary-individual > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
+
                 let payloadObj = {
                     primaryIndividualId: $("#tableCompareIndividuals > tbody > tr:nth-child(1) > td:nth-child(2) > div > input")[0].value
                 };
 
                 let counter = 1;
-                $.each(global_currentQueriedIndividual, function(index,value){
-                    if(value !== payloadObj.primaryIndividualId)
-                    {
-                        payloadObj["duplicateIndividualId"+counter.toString()] = value;
-                        ++counter;
-                    }
+                mergeIndividualGlobalVariables.queriedIndividualData.filter(x => x.existInTable === true && x['individual-identifier'] !== payloadObj.primaryIndividualId).forEach(e => {
+                    payloadObj["duplicateIndividualId"+counter.toString()] = e['individual-identifier'];
+                    ++counter;
                 });
 
-                //KDF.customdata('merge-individual', 'from form kdf custom script', true, true, payloadObj); FOR DEBUG TEMPORARITY DISABLED
+                console.log(payloadObj);
+                
+                if (mergeIndividualGlobalVariables.mergeBehavior === "updateandmerge")
+                    KDF.customdata('merge-individual', 'from form kdf custom script', true, true, payloadObj);
             }
         }
 
         if (response.action == 'merge-individual') {
             console.log("mergeindividualreturn");
-            //response.data.txt_result === "Customer ID's have been merged."
+            
+            if(response.data?.status !== undefined && response.data?.status !== null && response.data?.status === 'success')
+            {
+                $('.summary-merged-individuals > label').first().prepend('<i style="color:green" class="fa-regular fa-circle-check"></i> ');
+            }
         }
     });
-
-    
 };
-
-/*
-    //Is the primary customer already identified?
-    if (KDF.getVal('txt_customerid') !==''){
-        KDF.setVal('txt_firstcustomerID',KDF.getVal('txt_customerid'));
-        KDF.setVal('txt_user_to_find','first');
-        KDF.showSection('box_primary');
-        hideWidgets('but_select','person_search_results','hrd_search_primary');
-        showWidgets('but_second','hrd_search_secondary');
-        clearFields('txt_surname','txt_forename','txt_house_num_name','txt_address1','txt_email','txt_phonenum');
-    }
-    
-    // Listen for the Search Again button being pressed and clear the fields
-    $("#dform_widget_button_but_search_again").click(function(){
-        clearFields('txt_customerID','txt_firstcustomerID','txt_secondcustomerID','txt_result');
-    });
-    
-    //Take the value from the chosen field and add it to the golden record
-    $(".btn-choose").click(function(){
-        var button_selected = $(this);
-        var clicked_data = $(button_selected).parent().prev('div.record_data').find('input').val();
-        var clicked_class = $(button_selected).parent().prev('div.record_data').attr('class').split(" ")[3];
-        var golden_data = "txt_golden_" + clicked_class;
-        KDF.setVal(golden_data, clicked_data);
-    });
-    */
-
-/*
-// Sequence of events when the choose primary account button is pressed
-$("#dform_widget_button_but_select").click(function(){
-    var retrievedID = KDF.getVal('person_search_results');
-    KDF.setVal('txt_firstcustomerID',retrievedID);
-    KDF.setVal('txt_user_to_find','first');
-    KDF.showSection('box_primary');
-    KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
-        button_clicked:'primary',
-        person_search_results:KDF.getVal('txt_firstcustomerID')
-    });
-    hideWidgets('but_select','person_search_results','hrd_search_primary');
-    showWidgets('but_second','hrd_search_secondary');
-    clearFields('txt_surname','txt_forename','txt_house_num_name','txt_address1','txt_email','txt_phonenum');
-});
- 
-// Sequence of events when the choose second account button is pressed
-$("#dform_widget_button_but_second").click(function(){
-    var retrievedID = KDF.getVal('person_search_results');
-    KDF.setVal('txt_secondcustomerID',retrievedID);
-    KDF.setVal('txt_user_to_find','second');
-    showSections('box_secondary','box_golden','area_merge_table');
-    KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
-        button_clicked:'secondary',
-        person_search_results:KDF.getVal('txt_secondcustomerID')
-    }); 
-    hideWidgets('but_second','person_search_results');
-    clearFields('txt_surname','txt_forename','txt_house_num_name','txt_address1','txt_email','txt_phonenum');
-    hideSections('area_confirmnodupes','area_search_check');
-    showSections('box_primary_choose','box_secondary_choose');
-    
-});
- 
-// Clear merge values
-$("#dform_widget_button_but_clear").click(function(){
-    clearFields('txt_firstcustomerID','txt_secondcustomerID','txt_result','txt_primary_title','txt_secondary_title','txt_golden_title','txt_primary_first_name','txt_secondary_first_name','txt_golden_first_name','txt_primary_last_name','txt_secondary_last_name','txt_golden_last_name','txt_primary_house_number','txt_secondary_house_number','txt_golden_house_number','txt_primary_address','txt_secondary_address','txt_golden_address','txt_primary_city','txt_secondary_city','txt_golden_city','txt_primary_postcode','txt_secondary_postcode','txt_golden_postcode','txt_primary_country','txt_secondary_country','txt_golden_country');
-    hideSections('box_primary','box_secondary','box_primary_choose','box_secondary_choose','box_golden','area_merge_table','area_search_check');
-    showWidgets('but_select','hrd_search_primary');
-    KDF.showSection('area_confirmnodupes');
-    KDF.hideWidget('hrd_search_secondary');
-});
- 
-//Button to swap primary and secondary customer - NOTE - The primary customer record will be the one that remains after the merge has been completed, the secondary customer record will be deleted
-$("#dform_widget_button_but_swap").click(function(){
-    
-    KDF.setVal('txt_golden_title',KDF.getVal('txt_secondary_title')); 
-    KDF.setVal('txt_golden_first_name',KDF.getVal('txt_secondary_first_name'));
-    KDF.setVal('txt_golden_last_name',KDF.getVal('txt_secondary_last_name'));
-    KDF.setVal('txt_golden_email',KDF.getVal('txt_secondary_email'));
-    KDF.setVal('txt_golden_house_number',KDF.getVal('txt_secondary_house_number'));
-    KDF.setVal('txt_golden_address',KDF.getVal('txt_secondary_address'));
-    KDF.setVal('txt_golden_city',KDF.getVal('txt_secondary_city'));
-    KDF.setVal('txt_golden_postcode',KDF.getVal('txt_secondary_postcode'));
-    KDF.setVal('txt_golden_country',KDF.getVal('txt_secondary_country'));
-    
-    KDF.setVal('txt_secondary_title',KDF.getVal('txt_primary_title')); 
-    KDF.setVal('txt_secondary_first_name',KDF.getVal('txt_primary_first_name'));
-    KDF.setVal('txt_secondary_last_name',KDF.getVal('txt_primary_last_name'));
-    KDF.setVal('txt_secondary_email',KDF.getVal('txt_primary_email'));
-    KDF.setVal('txt_secondary_house_number',KDF.getVal('txt_primary_house_number'));
-    KDF.setVal('txt_secondary_address',KDF.getVal('txt_primary_address'));
-    KDF.setVal('txt_secondary_city',KDF.getVal('txt_primary_city'));
-    KDF.setVal('txt_secondary_postcode',KDF.getVal('txt_primary_postcode'));
-    KDF.setVal('txt_secondary_country',KDF.getVal('txt_primary_country'));    
- 
-    KDF.setVal('txt_primary_title',KDF.getVal('txt_golden_title')); 
-    KDF.setVal('txt_primary_first_name',KDF.getVal('txt_golden_first_name'));
-    KDF.setVal('txt_primary_last_name',KDF.getVal('txt_golden_last_name'));
-    KDF.setVal('txt_primary_email',KDF.getVal('txt_golden_email'));
-    KDF.setVal('txt_primary_house_number',KDF.getVal('txt_golden_house_number'));
-    KDF.setVal('txt_primary_address',KDF.getVal('txt_golden_address'));
-    KDF.setVal('txt_primary_city',KDF.getVal('txt_golden_city'));
-    KDF.setVal('txt_primary_postcode',KDF.getVal('txt_golden_postcode'));
-    KDF.setVal('txt_primary_country',KDF.getVal('txt_golden_country'));
-    
-});
- 
-*/
-
-/*
-fieldsData: {
-    'Name.NameID': {
-        visibility: false,
-        label: "Name Identifier"
-    },
-    'Name.Title': {
-        visibility: true,
-        label: "Title"
-    },
-    'Name.Forename1': {
-        visibility: true,
-        label: "First Name"
-    },
-    'Name.Forename2': {
-        visibility: false,
-        label: 'Name.Forename2'
-    },
-    'Name.Forename3': {
-        visibility: false,
-        label: 'Name.Forename3'
-    },
-    'Name.Surname': {
-        visibility: true,
-        label: "Last Name"
-    },
-    'ContactPostals.AddressID': {
-        visibility: false,
-        label: "ContactPostals.AddressID"
-    },
-    'ContactPostals.AddressNumber': {
-        visibility: true,
-        label: "Address Number"
-    },
-    'ContactPostals.AddressLine1': {
-        visibility: true,
-        label: "Address Line 1"
-    },
-    'ContactPostals.AddressLine2': {
-        visibility: true,
-        label: "Address Line 2"
-    },
-    'ContactPostals.AddressLine3': {
-        visibility: true,
-        label: "Locality"
-    },
-    'ContactPostals.AddressLine4': {
-        visibility: true,
-        label: "Town"
-    },
-    'ContactPostals.AddressLine5': {
-        visibility: true,
-        label: "County"
-    },
-    'ContactPostals.AddressLine6': {
-        visibility: false,
-        label: 'ContactPostals.AddressLine6'
-    },
-    'ContactPostals.Postcode': {
-        visibility: true,
-        label: "Postcode"
-    },
-    'ContactPostals.POBox': {
-        visibility: true,
-        label: "PO Box"
-    },
-    'ContactPhones.PhoneID': {
-        visibility: false,
-        label: "Phone Identifier"
-    },
-    'ContactPhones.Number': {
-        visibility: true,
-        label: 'Phone Number'
-    },
-    'ContactPhones.DeviceType': {
-        visibility: false,
-        label: 'Phone Device Type'
-    },
-    'ContactPhones.Usage': {
-        visibility: false,
-        label: 'Phone Usage'
-    },
-    'ContactEmails.EmailID': {
-        visibility: false,
-        label: "Email Identifier"
-    },
-    'ContactEmails.EmailAddress': {
-        visibility: true,
-        label: "Email Address"
-    },
-    'ContactEmails.Usage': {
-        visibility: false,
-        label: "Email Usage"
-    }
-}
-*/
