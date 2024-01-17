@@ -583,6 +583,9 @@ function goToMergedIndividual()
 
 function setTenantRegion(tenantCountryCode = null) //highly recommended to pass the value to this param to avoid auto-select
 {
+    if (window.location.host.split('.')[0] === 'proservices')
+        tenantCountryCode = "GB";
+
     if (tenantCountryCode === null) //this is for auto detect, not really reliable unless you tune the possible values. for example usain tenant is stgeuw idk where to put that.
     {
         let possibleValues = [
@@ -707,7 +710,7 @@ function mergeIndividualdebugTrigger(eventParamInject, kdfParamInject) {
     console.log("external js triggered");
     initializePageComplete();
     setHTMLMergeOptions();
-    setTenantRegion('GB'); //just hard code this during deployment. one time setup. proservices tenant not using CA but GB
+    setTenantRegion(); //just hard code this during deployment. one time setup. proservices tenant not using CA but GB
     $('#countryCode').val(mergeIndividualGlobalVariables.tenantCountryCode);
     console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
     initializeTableColumn();
