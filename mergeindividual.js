@@ -6,6 +6,35 @@ let mergeIndividualGlobalVariables = {
         {
             countryCode: 'ALLFIELDS', //show allfields for demo purpose (also this is all retrieved by formadapter)
             countryCodeLabel: 'Show ALL Fields',
+            searchFieldsOrder: [
+                'IndividualId',                
+                'Name',
+                'Forename',
+                'Forename2',
+                'DateOfBirth',
+                'NationalInsuranceNumber',
+                'SocialSecurityNumber',
+                'Postcode',
+                'AddressNumber',
+                'StreetName',
+                'City',
+                'StateCode',
+                'Zipcode',
+                'PhoneNumber',
+                'EmailAddress',
+                'GenericValue',
+                'SocialChannel',
+                'SocialID'
+            ],
+            searchFieldsLabel: {
+                'IndividualId': 'Identifier',
+                'Name': 'Last Name',
+                'Forename': 'First Name',
+                'AddressNumber': 'Address Number',
+                'PhoneNumber': 'Phone',
+                'EmailAddress': 'Email',
+                'Postcode': 'Postcode'
+            },
             fieldsOrder: [
                 'Name.NameID',
                 'Name.Title',
@@ -66,6 +95,24 @@ let mergeIndividualGlobalVariables = {
         {
             countryCode: 'GB', //taken from lbedev.ukpreview.empro.verintcloudservices.com apparently proservices tenant use this config
             countryCodeLabel: 'United Kingdom',
+            searchFieldsOrder: [
+                'IndividualId',
+                'Forename',
+                'Name',
+                'EmailAddress',
+                'PhoneNumber',
+                'AddressNumber',
+                'Postcode'
+            ],
+            searchFieldsLabel: {
+                'IndividualId': 'Identifier',
+                'Name': 'Last Name',
+                'Forename': 'First Name',
+                'AddressNumber': 'Address Number',
+                'PhoneNumber': 'Phone',
+                'EmailAddress': 'Email',
+                'Postcode': 'Postcode'
+            },
             fieldsOrder: [
                 'Name.Title',
                 'Name.Forename1',
@@ -100,6 +147,30 @@ let mergeIndividualGlobalVariables = {
         {
             countryCode: 'US', //taken from usain tenant
             countryCodeLabel: 'United States',
+            searchFieldsOrder: [
+                'IndividualId',                
+                'Forename',
+                'Name',
+                'DateOfBirth',
+                'EmailAddress',
+                'PhoneNumber',
+                'AddressNumber',
+                'StreetName',
+                'Zipcode',
+                'SocialID'
+            ],
+            searchFieldsLabel: {
+                'IndividualId': 'Identifier',
+                'Forename': 'First Name',
+                'Name': 'Last Name',
+                'DateOfBirth': 'Date of Birth',
+                'EmailAddress': 'Email',
+                'PhoneNumber': 'Phone',
+                'AddressNumber': 'Address Number',
+                'StreetName': 'Street Name',
+                'Zipcode': 'Zipcode',
+                'SocialID': 'Social ID'
+            },
             fieldsOrder: [
                 'Name.Title',
                 'Name.Forename1',
@@ -134,6 +205,22 @@ let mergeIndividualGlobalVariables = {
         {
             countryCode: 'CA',
             countryCodeLabel: 'Canada',
+            searchFieldsOrder: [
+                'IndividualId',
+                'Forename',
+                'Name',
+                'EmailAddress',
+                'PhoneNumber',
+                'AddressNumber'
+            ],
+            searchFieldsLabel: {
+                'IndividualId': 'Identifier',
+                'Name': 'Last Name',
+                'Forename': 'First Name',
+                'AddressNumber': 'Address Number',
+                'PhoneNumber': 'Phone',
+                'EmailAddress': 'Email'
+            },
             fieldsOrder: [
                 'Name.Title',
                 'Name.Forename1',
@@ -220,8 +307,7 @@ function addCustomerToTable(data) {
     
     mergeIndividualGlobalVariables.queriedIndividualData[internalObjDataIndex] = data;
     mergeIndividualGlobalVariables.queriedIndividualData[internalObjDataIndex].existInTable = true;
-    
-    //jumphere
+
     //create thead tr
     $('#tableCompareIndividuals > thead > tr').append('<th><div class="btn-column-remove" onclick="removeColumn(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div></th>');
 
@@ -304,17 +390,21 @@ function populateTable() {
         if (isSearchSectionEmpty === true)
             return;
         
-        let individualId = $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Identifier")').siblings('input').val();
+        let individualIdObj = $(".search-individual").eq(index).find('input[name="IndividualId"]');
+        let individualId = individualIdObj !== undefined ? $(".search-individual").eq(index).find('input[name="IndividualId"]').val() : '';
+
         if(individualId == "")
         {
-            KDF.customdata('merge-individual-search', 'from form kdf custom script', true, true, {
-                txt_forename: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("First Name")').siblings('input').val(),
-                txt_surname: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Last Name")').siblings('input').val(),
-                txt_house_num_name: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("House Name/Number")').siblings('input').val(),
-                txt_address1: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Address Line 1")').siblings('input').val(),
-                txt_email: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Email Address")').siblings('input').val(),
-                txt_phonenum: $('#searchFormSection > div:eq('+index.toString()+') > div > label:contains("Phone Number")').siblings('input').val()
+            let payloadObj = {};
+
+            $.each($(".search-individual").eq(index).find('input[name!="IndividualId"]'),function(index2,value){
+                if(value.value !== "")
+                {
+                    payloadObj[value.name] = value.value;
+                }
             });
+
+            KDF.customdata('merge-individual-search', 'from form kdf custom script', true, true, payloadObj);
         }
         else
         {
@@ -643,7 +733,7 @@ function removeSearchIndividualSection(e)
 }
 
 function initializeTableColumn()
-{
+{//jumphere
     if($('#tableCompareIndividuals > tbody').children().length > 0)
         $('#tableCompareIndividuals > tbody').html('');
 
@@ -678,6 +768,7 @@ function setCountryCode()
         resetForm();
     mergeIndividualGlobalVariables.tenantCountryCode = $('#countryCode').val();
     console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
+    initializeSearchFormSection();
     initializeTableColumn();
 }
 
@@ -706,6 +797,34 @@ function button_merge_another_OnClick()
     resetForm(true);
 }
 
+function initializeSearchFormSection()
+{//jumphere
+    $('#searchFormSection').html('');
+    $('#searchFormSection').append('<div class="search-individual"></div>');
+    $('#searchFormSection > .search-individual').append('<div class="btn-close" onclick="removeSearchIndividualSection(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div>');
+
+    let individualFieldsInfo = mergeIndividualGlobalVariables.individualFieldsInfo.find(x => x.countryCode == mergeIndividualGlobalVariables.tenantCountryCode);
+
+    if (individualFieldsInfo === undefined)
+    {
+        console.log("Error initializeSearchFormSection: Unable to find individualFieldsInfo with query Country Code");
+        return;
+    }
+
+    let searchFieldsOrder = individualFieldsInfo.searchFieldsOrder;
+
+    if (searchFieldsOrder === undefined)
+    {
+        console.log("Error initializeSearchFormSection: Unable to find searchFieldsOrder");
+        return;
+    }
+
+    searchFieldsOrder.forEach(function(e){
+        let labelText = individualFieldsInfo.searchFieldsLabel[e] ?? e;
+        $('#searchFormSection > .search-individual').append('<div class="inputbox"><label>'+labelText+'</label><input type="text" name="'+e+'"></div>');
+    });
+}
+
 function formScriptKdfReady(event, kdf, homepageUrl) {
     console.log("External JavaScript Trigger: formScriptKdfReady");
 
@@ -715,6 +834,7 @@ function formScriptKdfReady(event, kdf, homepageUrl) {
     setTenantRegion(); //just hard code this during deployment. one time setup. proservices tenant not using CA but GB
     $('#countryCode').val(mergeIndividualGlobalVariables.tenantCountryCode);
     console.log("Tenant Country Code: " + mergeIndividualGlobalVariables.tenantCountryCode);
+    initializeSearchFormSection();
     initializeTableColumn();
 
     mergeIndividualGlobalVariables.mergeBehavior = "updateandmerge";
