@@ -1,6 +1,8 @@
 let homepage_url = ""; //empty on purpose. will be filled by function formScriptKdfReady
 
 let mergeIndividualGlobalVariables = {
+    max_sub_search_retrieve: 3, //limit for max each search section (set this to null for unlimited) defaultValue: 10
+    max_search_retrieve: 10, //limit for whole returned individuals (will give priority to search by id) (set this to null for unlimited) defaultValue: 50
     mergeBehavior: "updateandmerge",
     individualFieldsInfo: [
         {
@@ -42,6 +44,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Forename2',
                 'Name.Forename3',
                 'Name.Surname',
+                'DateOfBirth',
                 'ContactPostals.AddressID',
                 'ContactPostals.AddressNumber',
                 'ContactPostals.AddressLine1',
@@ -70,6 +73,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Forename2': 'Name.Forename2',
                 'Name.Forename3': 'Name.Forename3',
                 'Name.Surname': "Last Name",
+                'DateOfBirth': "Date Of Birth",
                 'ContactPostals.AddressID': "ContactPostals.AddressID",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
@@ -117,6 +121,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title',
                 'Name.Forename1',
                 'Name.Surname',
+                'DateOfBirth',
                 'ContactPostals.AddressNumber',
                 'ContactPostals.AddressLine1',
                 'ContactPostals.AddressLine2',
@@ -132,6 +137,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title': "Title",
                 'Name.Forename1': "First Name",
                 'Name.Surname': "Last Name",
+                'DateOfBirth': "Date Of Birth",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
                 'ContactPostals.AddressLine2': "Address Line 2",
@@ -175,6 +181,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title',
                 'Name.Forename1',
                 'Name.Surname',
+                'DateOfBirth',
                 'ContactPostals.AddressNumber',
                 'ContactPostals.AddressLine1',
                 'ContactPostals.AddressLine2',
@@ -190,6 +197,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title': "Title",
                 'Name.Forename1': "First Name",
                 'Name.Surname': "Last Name",
+                'DateOfBirth': "Date Of Birth",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
                 'ContactPostals.AddressLine2': "Address Line 2",
@@ -225,6 +233,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title',
                 'Name.Forename1',
                 'Name.Surname',
+                'DateOfBirth',
                 'ContactPostals.AddressNumber',
                 'ContactPostals.AddressLine1',
                 'ContactPostals.AddressLine2',
@@ -240,6 +249,7 @@ let mergeIndividualGlobalVariables = {
                 'Name.Title': "Title",
                 'Name.Forename1': "First Name",
                 'Name.Surname': "Last Name",
+                'DateOfBirth': "Date Of Birth",
                 'ContactPostals.AddressNumber': "Address Number",
                 'ContactPostals.AddressLine1': "Address Line 1",
                 'ContactPostals.AddressLine2': "Address Line 2",
@@ -309,8 +319,9 @@ function addCustomerToTable(data) {
     mergeIndividualGlobalVariables.queriedIndividualData[internalObjDataIndex].existInTable = true;
 
     //create thead tr
-    $('#tableCompareIndividuals > thead > tr').append('<th><div class="btn-column-remove" onclick="removeColumn(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div></th>');
-
+    $('#tableCompareIndividuals > thead > tr').append('<th><div class="tbl-header-flex"><div class="btn-column-copy" onclick="copyValToMainFromHeader(this)"><i class="fa-regular fa-copy fa-2x"></i></div><div class="btn-column-remove" onclick="removeColumn(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div></div></th>');
+    //<th><div class="tbl-header-flex"><div class="btn-column-copy"><i class="fa-regular fa-copy fa-2x"></i></div><div class="btn-column-remove" onclick="removeColumn(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div></div></th>
+    //<th><div class="btn-column-remove" onclick="removeColumn(this)"><i class="fa-solid fa-circle-xmark fa-2x"></i></div></th>
     let keycloakLogo = data['keycloak-id'] !== '' ? '<i class="fa-solid fa-user-check"></i>' : '';
 
     //generate first row tbody td identifier
@@ -347,6 +358,15 @@ function removeColumn(element) {
 }
 
 function populateTable() {
+    //need to find out search fields order
+    let individualFieldsInfo = mergeIndividualGlobalVariables.individualFieldsInfo.find(x => x.countryCode == mergeIndividualGlobalVariables.tenantCountryCode);
+
+    if (individualFieldsInfo === undefined)
+    {
+        console.log("Error populateTable: Unable to find individualFieldsInfo with query Country Code");
+        return;
+    }
+
     KDF.hideMessages();
     
     let isAllSearchFieldEmpty = true;
@@ -375,6 +395,9 @@ function populateTable() {
     $('#addOrCondition').toggle('fast');
     $('#resetOrCondition').toggle('fast');
 
+    let searchFieldsOrder = individualFieldsInfo.searchFieldsOrder;
+    let searchFieldIndividualIdIndex = searchFieldsOrder.indexOf('IndividualId');
+
     //fill the table
     $.each($(".search-individual"),function(index,value){
         let isSearchSectionEmpty = true;
@@ -390,17 +413,18 @@ function populateTable() {
         if (isSearchSectionEmpty === true)
             return;
         
-        let individualIdObj = $(".search-individual").eq(index).find('input[name="IndividualId"]');
-        let individualId = individualIdObj !== undefined ? $(".search-individual").eq(index).find('input[name="IndividualId"]').val() : '';
+        // let individualIdObj = $(".search-individual").eq(index).find('input[name="IndividualId"]');
+        // let individualId = individualIdObj !== undefined ? $(".search-individual").eq(index).find('input[name="IndividualId"]').val() : '';
+        let individualId = searchFieldIndividualIdIndex >= 0 ? $(".search-individual").eq(index).find('input').eq(searchFieldIndividualIdIndex).val() : '';
 
         if(individualId == "")
         {
             let payloadObj = {};
 
-            $.each($(".search-individual").eq(index).find('input[name!="IndividualId"]'),function(index2,value){
-                if(value.value !== "")
+            $.each($(".search-individual").eq(index).find('input'),function(index2,value){
+                if(index2!=searchFieldIndividualIdIndex && value.value !== "")
                 {
-                    payloadObj[value.name] = value.value;
+                    payloadObj[searchFieldsOrder[index2]] = value.value;
                 }
             });
 
@@ -580,6 +604,11 @@ function setMergedCustomerColumn(columnIndex)
     $.each($('#tableCompareIndividuals > tbody > tr'), function(index, value){
         $('#tableCompareIndividuals > tbody > tr:eq('+index.toString()+') > td:eq(1) > div > input').val($('#tableCompareIndividuals > tbody > tr:eq('+index.toString()+') > td:eq('+columnIndex.toString()+') > div label').html());
     });
+}
+
+function copyValToMainFromHeader(element)
+{
+    setMergedCustomerColumn($(element).closest('th').index());
 }
 
 function copyValToMain(element)
@@ -821,7 +850,7 @@ function initializeSearchFormSection()
 
     searchFieldsOrder.forEach(function(e){
         let labelText = individualFieldsInfo.searchFieldsLabel[e] ?? e;
-        $('#searchFormSection > .search-individual').append('<div class="inputbox"><label>'+labelText+'</label><input type="text" name="'+e+'"></div>');
+        $('#searchFormSection > .search-individual').append('<div class="inputbox"><label>'+labelText+'</label><input type="text"></div>');
     });
 }
 
@@ -857,17 +886,44 @@ function formScriptKdfReady(event, kdf, homepageUrl) {
 
 function formScriptKdfCustom(event, kdf, response, action) {
     console.log("FORMADAPTER TRIGGER: " + response.action);
-    if (response.action == 'merge-individual-search') { 
-        $.each(response.data.person_search_results, function(index, value){
-            if(mergeIndividualGlobalVariables.queriedIndividualData.find(x => x['individual-identifier'] === value.value) === undefined)
+    if (response.action == 'merge-individual-search') {
+        if(mergeIndividualGlobalVariables.max_sub_search_retrieve !== null)
+        {
+            if(response.data.person_search_results.length > mergeIndividualGlobalVariables.max_sub_search_retrieve)
             {
-                mergeIndividualGlobalVariables.queriedIndividualData.push({
-                    'individual-identifier': value.value,
-                    existInTable: false
-                });
-                KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
-                    'individual-id': value.value
-                });
+                response.data.person_search_results.length = mergeIndividualGlobalVariables.max_sub_search_retrieve;
+            }
+        }
+
+        $.each(response.data.person_search_results, function(index, value){
+            if(mergeIndividualGlobalVariables.max_search_retrieve !== null)
+            {
+                if(mergeIndividualGlobalVariables.queriedIndividualData.length < mergeIndividualGlobalVariables.max_search_retrieve)
+                {
+                    if(mergeIndividualGlobalVariables.queriedIndividualData.find(x => x['individual-identifier'] === value.value) === undefined)
+                    {
+                        mergeIndividualGlobalVariables.queriedIndividualData.push({
+                            'individual-identifier': value.value,
+                            existInTable: false
+                        });
+                        KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
+                            'individual-id': value.value
+                        });
+                    }
+                }
+            }
+            else
+            {
+                if(mergeIndividualGlobalVariables.queriedIndividualData.find(x => x['individual-identifier'] === value.value) === undefined)
+                {
+                    mergeIndividualGlobalVariables.queriedIndividualData.push({
+                        'individual-identifier': value.value,
+                        existInTable: false
+                    });
+                    KDF.customdata('merge-individual-retrieve', 'from form kdf custom script', true, true, {
+                        'individual-id': value.value
+                    });
+                }
             }
         });
     }

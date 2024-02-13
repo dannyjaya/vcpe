@@ -264,13 +264,25 @@
     display: none;
 }
 
-.btn-column-remove {
+.tbl-header-flex{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap:20px;
+}
+
+.btn-column-remove,
+.btn-column-copy {
     cursor: pointer;
     text-align: center;
 }
 
 .btn-column-remove > i{
-    color: red;
+    color: white;
+}
+
+.btn-column-copy > i{
+    color: white;
 }
 
 #developerOptions{
