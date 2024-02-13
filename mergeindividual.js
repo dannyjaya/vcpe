@@ -1,8 +1,8 @@
 let homepage_url = ""; //empty on purpose. will be filled by function formScriptKdfReady
 
 let mergeIndividualGlobalVariables = {
-    max_sub_search_retrieve: 3, //limit for max each search section (set this to null for unlimited) defaultValue: 10
-    max_search_retrieve: 10, //limit for whole returned individuals (will give priority to search by id) (set this to null for unlimited) defaultValue: 50
+    max_sub_search_retrieve: 20, //limit for max each search section (set this to null for unlimited) defaultValue: 10 (undecided, discuss this with client needs)
+    max_search_retrieve: 100, //limit for whole returned individuals (will give priority to search by id) (set this to null for unlimited) defaultValue: 50 (undecided, discuss this with client needs)
     mergeBehavior: "updateandmerge",
     individualFieldsInfo: [
         {
