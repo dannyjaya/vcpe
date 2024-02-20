@@ -1,9 +1,228 @@
 let homepage_url = ""; //empty on purpose. will be filled by function formScriptKdfReady
 
 let mergeIndividualGlobalVariables = {
-    max_sub_search_retrieve: 20, //limit for max each search section (set this to null for unlimited) defaultValue: 10 (undecided, discuss this with client needs)
-    max_search_retrieve: 100, //limit for whole returned individuals (will give priority to search by id) (set this to null for unlimited) defaultValue: 50 (undecided, discuss this with client needs)
+    max_sub_search_retrieve: 20, //limit for max each search section (set this to null for unlimited) defaultValue: 10
+    max_search_retrieve: 100, //limit for whole returned individuals (will give priority to search by id) (set this to null for unlimited) defaultValue: 50
     mergeBehavior: "updateandmerge",
+    individualFieldsConstraint: [
+        {
+            individualFieldKey: 'Name.NameID',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'Name.Title',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            individualFieldKey: 'Name.Forename1',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            individualFieldKey: 'Name.Forename2',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            individualFieldKey: 'Name.Forename3',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            individualFieldKey: 'Name.Surname',
+            inputType: 'text',
+            maxLength: 70
+        },
+        {
+            individualFieldKey: 'DateOfBirth',
+            inputType: 'date'
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressID',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressNumber',
+            inputType: 'text',
+            maxLength: 50
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine1',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine2',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine3',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine4',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine5',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.AddressLine6',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            individualFieldKey: 'ContactPostals.City',
+            inputType: 'text',
+            maxLength: 100
+        },
+        {
+            individualFieldKey: 'ContactPostals.StateCode',
+            inputType: 'text',
+            maxLength: 2
+        },
+        {
+            individualFieldKey: 'ContactPostals.Postcode',
+            inputType: 'text',
+            maxLength: 8
+        },
+        {
+            individualFieldKey: 'ContactPostals.Zipcode',
+            inputType: 'text',
+            maxLength: 10
+        },
+        {
+            individualFieldKey: 'ContactPostals.POBox',
+            inputType: 'text',
+            maxLength: 50
+        },
+        {
+            individualFieldKey: 'ContactPhones.PhoneID',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'ContactPhones.Number',
+            inputType: 'tel',
+            maxLength: 35
+        },
+        {
+            individualFieldKey: 'ContactPhones.DeviceType',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'ContactPhones.Usage',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'ContactEmails.EmailID',
+            inputType: 'text'
+        },
+        {
+            individualFieldKey: 'ContactEmails.EmailAddress',
+            inputType: 'email',
+            maxLength: 255
+        },
+        {
+            individualFieldKey: 'ContactEmails.Usage',
+            inputType: 'text'
+        },
+    ],
+    searchFieldsConstraint: [
+        {
+            searchFieldKey: 'IndividualId',
+            inputType: 'text'
+        },
+        {
+            searchFieldKey: 'Name',
+            inputType: 'text',
+            maxLength: 70
+        },
+        {
+            searchFieldKey: 'Forename',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            searchFieldKey: 'Forename2',
+            inputType: 'text',
+            maxLength: 35
+        },
+        {
+            searchFieldKey: 'DateOfBirth',
+            inputType: 'date'
+        },
+        {
+            searchFieldKey: 'NationalInsuranceNumber',
+            inputType: 'text',
+            maxLength: 9
+        },
+        {
+            searchFieldKey: 'SocialSecurityNumber',
+            inputType: 'text',
+            maxLength: 11
+        },
+        {
+            searchFieldKey: 'Postcode',
+            inputType: 'text',
+            maxLength: 8
+        },
+        {
+            searchFieldKey: 'AddressNumber',
+            inputType: 'text',
+            maxLength: 50
+        },
+        {
+            searchFieldKey: 'StreetName',
+            inputType: 'text',
+            maxLength: 150
+        },
+        {
+            searchFieldKey: 'City',
+            inputType: 'text',
+            maxLength: 100
+        },
+        {
+            searchFieldKey: 'StateCode',
+            inputType: 'text',
+            maxLength: 2
+        },
+        {
+            searchFieldKey: 'Zipcode',
+            inputType: 'text',
+            maxLength: 10
+        },
+        {
+            searchFieldKey: 'PhoneNumber',
+            inputType: 'tel',
+            maxLength: 35
+        },
+        {
+            searchFieldKey: 'EmailAddress',
+            inputType: 'email',
+            maxLength: 255
+        },
+        {
+            searchFieldKey: 'GenericValue',
+            inputType: 'text',
+            maxLength: 80
+        },
+        {
+            searchFieldKey: 'SocialChannel',
+            inputType: 'text',
+            maxLength: 15
+        },
+        {
+            searchFieldKey: 'SocialID',
+            inputType: 'text',
+            maxLength: 100
+        }
+    ],
     individualFieldsInfo: [
         {
             countryCode: 'ALLFIELDS', //show allfields for demo purpose (also this is all retrieved by formadapter)
@@ -573,6 +792,15 @@ function mergeCustomer() {
 
     if (mergeIndividualGlobalVariables.mergeBehavior !== "none")
         KDF.customdata('merge-individual-update', 'from form kdf custom script', true, true, dataObj);
+
+    //replace input type date with text. because using date will trigger bug (explained in confluence wiki)
+    document.querySelectorAll('#searchFormSection input[type="date"]').forEach(function(e){
+        e.type = "text";
+    });
+    document.querySelectorAll('#tableCompareIndividuals > tbody > tr > td > div > input[type="date"]').forEach(function(e){
+        e.type = "text";
+    });
+
     KDF.gotoNextPage();
     setMergeCompleteSummary();
 }
@@ -787,7 +1015,17 @@ function initializeTableColumn()
 
     fieldsInfo.forEach(function(e){
         let labelText = individualFieldsInfo.fieldsLabel[e];
-        $('#tableCompareIndividuals > tbody').append('<tr><td>'+labelText+'</td><td><div><input type="text" class="txb-input"><div class="refresh-field" onclick="clearSpecificField(this)"><i class="fa fa-refresh" style="margin: 2px;"></i></div></div></td></tr>');
+        let inputType = "text"; //default always text
+        let maxLength = ""; //default no max length
+
+        let individualFieldConstraintObj = mergeIndividualGlobalVariables.individualFieldsConstraint.find(x => x.individualFieldKey === e);
+
+        if(individualFieldConstraintObj)
+        {
+            inputType = individualFieldConstraintObj.inputType ?? "text";
+            maxLength = individualFieldConstraintObj.maxLength ? 'maxlength="' + individualFieldConstraintObj.maxLength + '"' : "";
+        }
+        $('#tableCompareIndividuals > tbody').append('<tr><td>'+labelText+'</td><td><div><input type="'+inputType+'" class="txb-input" '+maxLength+'><div class="refresh-field" onclick="clearSpecificField(this)"><i class="fa fa-refresh" style="margin: 2px;"></i></div></div></td></tr>');
     });
 }
 
@@ -824,6 +1062,7 @@ function button_merge_another_OnClick()
 {
     KDF.gotoPage('search_individual');
     resetForm(true);
+    initializeSearchFormSection();//need to redraw cause of confluence bug //untested //jumphere //check
 }
 
 function initializeSearchFormSection()
@@ -850,7 +1089,19 @@ function initializeSearchFormSection()
 
     searchFieldsOrder.forEach(function(e){
         let labelText = individualFieldsInfo.searchFieldsLabel[e] ?? e;
-        $('#searchFormSection > .search-individual').append('<div class="inputbox"><label>'+labelText+'</label><input type="text"></div>');
+        
+        let inputType = "text"; //default always text
+        let maxLength = ""; //default no max length
+
+        let searchFieldConstraintObj = mergeIndividualGlobalVariables.searchFieldsConstraint.find(x => x.searchFieldKey === e);
+
+        if(searchFieldConstraintObj)
+        {
+            inputType = searchFieldConstraintObj.inputType ?? "text";
+            maxLength = searchFieldConstraintObj.maxLength ? 'maxlength="' + searchFieldConstraintObj.maxLength + '"' : "";
+        }
+
+        $('#searchFormSection > .search-individual').append('<div class="inputbox"><label>' + labelText + '</label><input type="' + inputType + '" ' + maxLength + '></div>');
     });
 }
 
